@@ -1,72 +1,115 @@
+import { uuid } from 'uuidv4';
 
-
-const Header = ({header}) => {
+const Header = ({name}) => {
     return (
-        <h1>{header}</h1>
+        <div>
+            <h1>{name}</h1>
+        </div>
+    )
+}
+const Total = ({total}) => {
+    return (
+        <div>
+            <h1>{total}</h1>
+        </div>
     )
 }
 const Part = ({exercise, name}) => {
 
     return (
+        <div>
+            
         <li style={{
             listStyleType: "none"
         }}>{name} {exercise}</li>
-    )
-}
-
-const Content = ({course}) => {
-    const intialValue = 0;
-    let total = course.reduce((a, b) => {
-
-        return a + b.exercises
-
-    }, intialValue)
-    console.log(total)
-    return (
-        <div>
-
-            <ul>
-                {course.map((part) => {
-
-                    return <Part key={part.id} exercise={part.exercises} name={part.name}/>
-                })}
-            </ul>
-            <p>total of {total} exercises</p>
         </div>
     )
 }
 
-const Course = ({course}) => {
+const Content = ({courses}) => {
+    const intialValue = 0;
+    let exercisestotal = courses.map(element => {
+        let totalArray = element.parts.reduce((a, b) => {
+            console.log(element.parts, b.exercises, a)
+            return a + b.exercises
+    
+        }, intialValue)
+        return totalArray
+    });
+    let finalArray = exercisestotal.map((element) => {
+        
+        let obj = {val: element};
+            
+        return obj;
+    })
+    console.log(finalArray)
+
     return (
         <div>
-            <Header header={course.name}/>
-            <Content course={course.parts}/>
+
+            <ul>
+            {courses.flatMap((part) => [<Header key={part.id} name={part.name}/>, part.parts.map((localparts) => <Part key={localparts.id} exercise={localparts.exercises} name={localparts.name}/>),<Total key={uuid} total={exercisestotal}/>])}
+
+            </ul>
+         
+        </div>
+    )}
+
+const Course = ({courses}) => {
+    return (
+        <div>
+            <Content courses={courses}/>
         </div>
     )
 }
 
 const App = () => {
-    const course = {
-        id: 1,
-        name: 'Half Stack application development',
-        parts: [
+    const courses = [
+        {
+          name: 'Half Stack application development',
+          id: 1,
+          parts: [
             {
-                name: 'Fundamentals of React',
-                exercises: 10,
-                id: 1
-            }, {
-                name: 'Using props to pass data',
-                exercises: 7,
-                id: 2
-            }, {
-                name: 'State of a component',
-                exercises: 14,
-                id: 3
+              name: 'Fundamentals of React',
+              exercises: 10,
+              id: 1
+            },
+            {
+              name: 'Using props to pass data',
+              exercises: 7,
+              id: 2
+            },
+            {
+              name: 'State of a component',
+              exercises: 14,
+              id: 3
+            },
+            {
+              name: 'Redux',
+              exercises: 11,
+              id: 4
             }
-        ]
-    }
+          ]
+        }, 
+        {
+          name: 'Node.js',
+          id: 2,
+          parts: [
+            {
+              name: 'Routing',
+              exercises: 3,
+              id: 1
+            },
+            {
+              name: 'Middlewares',
+              exercises: 7,
+              id: 2
+            }
+          ]
+        }
+      ]
 
-    return <Course course={course}/>
+    return <Course courses={courses}/>
 }
 
 export default App
