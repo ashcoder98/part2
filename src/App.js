@@ -1,4 +1,5 @@
 import { uuid } from 'uuidv4';
+import { useState } from 'react';
 
 const Header = ({name}) => {
     return (
@@ -15,6 +16,7 @@ const Total = ({total}) => {
     )
 }
 const Part = ({exercise, name}) => {
+let total, setTotal = useState(0);
 
     return (
         <div>
@@ -48,7 +50,7 @@ const Content = ({courses}) => {
         <div>
 
             <ul>
-            {courses.flatMap((part) => [<Header key={part.id} name={part.name}/>, part.parts.map((localparts) => <Part key={localparts.id} exercise={localparts.exercises} name={localparts.name}/>),<Total key={uuid} total={exercisestotal}/>])}
+            {courses.flatMap((part) => [<Header key={part.id} name={part.name}/>, part.parts.map((localparts) => <Part key={localparts.id} exercise={localparts.exercises} name={localparts.name}/>), part.parts.reduce((a,b) => {return a + b.exercises}, 0)])}
 
             </ul>
          
